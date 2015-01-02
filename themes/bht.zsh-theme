@@ -7,34 +7,31 @@
 # Mar 2013 ys
 # modified Apr 2014 Brian Trammell
 
-# Directory info.
+# Directory info
 local current_dir='${PWD/#$HOME/~}'
 
-# Git info.
+# Git info
 local git_info='$(git_prompt_info)'
 ZSH_THEME_GIT_PROMPT_PREFIX=" %{$fg[white]%}on%{$reset_color%} git:%{$fg[cyan]%}"
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_DIRTY=" %{$fg[red]%}x"
 ZSH_THEME_GIT_PROMPT_CLEAN=" %{$fg[green]%}o"
 
-# Prompt format: \n # USER at MACHINE in DIRECTORY on git:BRANCH STATE [TIME] \n $ 
-PROMPT="
-%{$terminfo[bold]$fg[white]%}->%{$reset_color%} \
-%{$fg[cyan]%}%n\
-%{$fg[white]%}@\
-%{$fg[green]%}%m \
-%{$fg[white]%}in \
-%{$terminfo[bold]$fg[yellow]%}${current_dir}%{$reset_color%}\
-${git_info} \
-%{$fg[white]%}[%*]
-%{$terminfo[bold]$fg[red]%}$ %{$reset_color%}"
-
+# Identity with different coloring for root
 if [[ "$(whoami)" == "root" ]]; then
+    local identity="%{$terminfo[bold]$bg[red]$fg[white]%}%n@%m%{$reset_color%}"
+else
+    local identity="%{$fg[cyan]%}%n%{$fg[white]%}@%{$fg[green]%}%m%{$reset_color%}"
+fi
+
+# Return status
+local ret_status="%(?:%{$fg_bold[green]%}->:%{$fg_bold[red]%}->)"
+
+# Prompt format: \n # -> (status) USER at MACHINE in DIRECTORY on git:BRANCH STATE [TIME] \n $ 
 PROMPT="
-%{$terminfo[bold]$bg[red]$fg[white]%}-> %n@%m%{$reset_color%} \
+${ret_status} ${identity} \
 %{$fg[white]%}in \
 %{$terminfo[bold]$fg[yellow]%}${current_dir}%{$reset_color%}\
 ${git_info} \
 %{$fg[white]%}[%*]
-%{$terminfo[bold]$fg[red]%}# %{$reset_color%}"
-fi
+%{$terminfo[bold]%}%# %{$reset_color%}"
